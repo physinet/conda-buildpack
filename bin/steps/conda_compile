@@ -7,20 +7,16 @@ if [ ! -d /app/.heroku/miniconda ]; then
     conda install pip --yes | indent
 fi
 
-echo "nomkl" > $HOME/.heroku/miniconda/conda-meta/pinned
-echo "added pinned file in $HOME/.heroku/miniconda/conda-meta/pinned"
-conda install nomkl
-
-
-if [ -f conda-requirements.txt ]; then
-    puts-step "Installing dependencies using Conda"
-    conda install --file conda-requirements.txt --yes | indent
+if [ -f environment.yml ]; then
+    puts-step "Creating conda environment"
+    # TODO: Use update if its already there
+    conda env remove --yes --quiet --name heroku-env
+    conda env create --name=heroku-env --file environment.yml
 fi
 
-if [ -f requirements.txt ]; then
-    puts-step "Installing dependencies using Pip"
-    pip install -r requirements.txt  --exists-action=w | indent
-fi
+source activate heroku-env
+
 
 # Clean up the installation environment .
+# TODO Determine if removing packages might be bad here
 conda clean -pt --yes > /dev/null
