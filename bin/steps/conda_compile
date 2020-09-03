@@ -14,6 +14,8 @@ if [ -f environment.yml ]; then
     conda env create --name=heroku-env --file environment.yml
 fi
 
+source activate heroku-env
+
 
 # Clean up the installation environment .
 # TODO Determine if removing packages might be bad here
